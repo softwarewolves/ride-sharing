@@ -10,14 +10,14 @@ Node 8.x
 
 ## Getting Started
 
-If you only want to observe the behavior of a secure (we think) version of this application, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
+If you only want to observe the behavior of a secure version of this application, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
 
 1. Gain access to a backend API by setting one up for yourself or requesting the following from the instructor or author:
    * the URL (including stage) of the API
    * an API key
 1. `git clone https://softwarewolves/ride-sharing`
 1. `cd ride-sharing`
-1. All the information allowing you to connect to the API need to be supplied to the SPA. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
+1. All the information allowing you to connect to the API need to be supplied to the application. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
    * `REACT_APP_API_KEY`
    * `REACT_APP_API_HOST`
    * `REACT_APP_API_STAGE`
