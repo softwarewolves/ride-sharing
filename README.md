@@ -1,6 +1,8 @@
 # Ride sharing
 
-This is an SPA written for didactic purposes. It consumes a backend API defined in [a companion, Ride Sharing API project](https://github.com/JohanPeeters/rides-api).
+This is an intentionally vulnerable browser-based JavaScript application for use in course work. Find and fix the vulnerabilities.
+
+This app consumes a backend API defined in [a companion, Ride Sharing API, project](https://github.com/JohanPeeters/rides-api).
 
 ## Prerequisites
 
@@ -8,73 +10,31 @@ Node 8.x
 
 ## Getting Started
 
-If you only want to observe the behavior of this SPA, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
+If you only want to observe the behavior of a secure (we think) version of this application, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
 
-1. Gain access to a backend API by setting one up for yourself or requesting the following from the author:
+1. Gain access to a backend API by setting one up for yourself or requesting the following from the instructor or author:
    * the URL (including stage) of the API
    * an API key
-   * the issuer's URL
-   * a client ID
-1. `git clone https://github.com/JohanPeeters/ride-sharing`
+1. `git clone https://softwarewolves/ride-sharing`
 1. `cd ride-sharing`
 1. All the information allowing you to connect to the API need to be supplied to the SPA. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
    * `REACT_APP_API_KEY`
    * `REACT_APP_API_HOST`
    * `REACT_APP_API_STAGE`
-   * `REACT_APP_CLIENT_ID`
-   * `REACT_APP_ISSUER`
-   * `REPORT_URI_SUBDOMAIN`
-   * `AS`
-   * `INLINE_RUNTIME_CHUNK` - this is only needed when you are doing production builds, e.g. on Netlify. It should be set to `false`; this causes the runtime script not to be inlined in a production build. If the variable is not set to `false` during a Netlify build, the runtime script will fail to execute because of the CSP specified in `netlify.toml`.
 1. `npm install`
 1. `npm start`
    * starts a development server
    * opens a tab in the default browser
-   * loads the SPA.
+   * loads the application.
 1. Make changes and watch the effects on the application.
 
 The repo contains files to build and deploy the application on Netlify as well as the source code.
 
+It turns out that, in order to secure the application and get full access to the API, you need some additional information. Do you know which?
+
 ## React
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-### Available Scripts
-
-In the project directory, you can run:
-
-#### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-#### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-#### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-#### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
 ### Learn More about React
 
@@ -84,30 +44,35 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Security
 
+In its current state, the application is vulnerable and does not offer the full intended functionality. The aim is to make it secure and complete features. In this section, we identify the issues that should minimally be addressed.
+
 ### Access Control
 
-The API is secured with an [AWS Cognito User Pool](https://docs.aws.amazon.com/cognito), which means that certain API calls will only succeed if accompanied by an appropriate security token. So, the SPA obtains tokens from Cognito. It uses the [oidc-client-js](https://github.com/IdentityModel/oidc-client-js) OpenID Connect library to do so. In other words, it uses the OAuth Authorization Code flow with PKCE to request tokens. This means that the user is redirected to a Cognito hosted page for an authentication dialog. The more common solution is to offer the user a form embedded into the SPA to enter credentials. Indeed, this is the only option available in the library supplied by AWS to interact with Cognito, [Amplify Authenticate](https://aws-amplify.github.io/docs/js/authentication). This is called *embedded authentication*, but also often referred to as *cross-origin authentication*.
+The API is secured with an [AWS Cognito User Pool](https://docs.aws.amazon.com/cognito), which means that the following API calls will only succeed if accompanied by an appropriate security token:
+* POST /rides (create)
+* PUT /rides/{rideID}
+* DELETE /rides/{rideID}
 
-#### Log in
+### Browsing context isolation
 
-When the user logs in, he or she is redirected to a page hosted by Cognito containing a form requesting credentials. In the response headers, Cognito sets a cookie to keep track of the session. If the user authenticates successfully, Cognito returns a code via a redirect to the SPA and marks the session as authenticated. This means that when the user is redirected again to Cognito within the validity period of the authenticated session, codes are re-issued without the need to re-enter credentials.
+Web sites often include resources from origins they do not control and should not trust. This discloses confidential information to third parties, jeopardizes user privacy and puts the integrity of the application at risk.
 
-oidc-client checks whether there is an outstanding request for the received code and, if so, exchanges the code for security tokens and stores them in local storage.
+### XSS
 
-#### Log out
+Cross-Site Scripting (XSS) vulnerabilities are wide-spread and hard to avoid. A multi-layered defense to protect against XSS is recommended.
 
-The user may wish to stop using his or her credentials on the back end. There is no good way of doing this within the validity period of the session between the user agent and Cognito: oidc-client offers a `removeUser()` function, which discards tokens from local storage, and Cognito has a logout endpoint which invalidates tokens. However, a new login request is immediately satisfied without further authentication since the session between the user agent and Cognito has not expired. Removing the cookie is not an option since it is HttpOnly.
+### Injection vulnerabilities
 
-## Open Issues
+XSS is arguably the most serious type of injection vulnerability as a successful script injection may result in total control of the application. Nonetheless, other types of injections such as style injection can cause substantial damage as well.
 
-* *log out* - see above.
-* *flicker on redirect* - when the user is logged in to the authorization server, but has cleared tokens, he or she can log back in without re-authenticating if the authenticated session has not expired (see above). In this scenario, there is a redirect from the client to the AS and back to the client without any user interaction. Ideally, the user would not notice. This is not the case since a redirect causes the React application to reload and re-render. My current thinking is that this is inherent in React and can only be avoided with considerable effort, but I am hoping to be proven wrong. Moving to popups does not seem to be a fruitful approach as it would merely replace one UI glitch with another.
-* *token validity period* is 1 hour. This is rather long, but fixed by Cognito and, at the time of writing, cannot be changed.
-* *network round trips* - each time a token is requested, issuer metadata are retrieved. oidc-client-js seems to do this by design. Since metadata, such as the location of the authorization or token endpoints change only very sporadically, they are prime candidates for caching. This could be done with the service worker. Currently, the service worker is disabled.
-* the *script-src* CSP directive was designed to mitigate the risk of XSS. Unless explicitly allowed, the browser refuses to run any inline scripts. By default React uses an inline script. This can be switched off in a production environment by setting the `INLINE_RUNTIME_CHUNK` to `false`.
-* the *style-src* CSP directives was designed to mitigate the risk of CSS injection. Unless explicitly allowed, the browser refuses to load any inline styles. However, this application uses Material UI, which in turn relies on JSS for styling. JSS places styles inline. JSS documentation suggests [protecting these with a nonce](https://cssinjs.org/csp?v=v10.0.0-alpha.7), but the suggested technique relies on express middleware. Since our application is delivered as a static file, there is no need for express. Indeed, as nonces rely on being unique for every running instance, they cannot be used in this context. The 2 remaining alternatives are
-   * supply an SRI-hash for every inline styles,
-   * allow `unsafe-inline`.
-I'm ashamed to admit I opted for this one. There are just too many inline styles for the former.
-* *script-src and style-src vs script-src-elem and style-src-elem* - the former are currently standardized, the latter are in the CSP level 3 draft standard. The latter affords more fine-grained control and will presumably become the directives of choice. As they are still at the draft stage, they have not been used for now.
-* *token validation* - oidc-client validates a number of claims such as `iss`, `iat`, `exp`, `aud` and `azp`. However, it does not verify the signature. Before placing the user in an authenticated context, `App` calls `helpers/tokens.verify()` to verify the signature. At the moment, this method also performs a number of redundant claim checks.
+### Information leakage
+
+Care should be taken that URLs that carrying confidential information are not inadvertently handed to potentially hostile third parties.
+
+### Clickjacking
+
+In clickjacking, AKA UI redressing, an application is loaded into a transparant iframe and placed on top of another document. The user may be enticed by the underlying document to perform unintended actions in the application.
+
+### Resource integrity
+
+Most applications rely on third-party style and script resources. An application should protect itself against these becoming corrupted.

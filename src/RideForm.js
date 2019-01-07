@@ -1,11 +1,9 @@
 import React, {Component} from 'react'
 import {TextField, Button} from '@material-ui/core'
 import axios from 'axios'
-import AuthenticatedUserContext from './AuthenticatedUserContext'
 
 
 class RideForm extends Component {
-  static contextType = AuthenticatedUserContext
 
   constructor(props) {
     super(props)
@@ -41,14 +39,13 @@ class RideForm extends Component {
       url: path,
       method: this.props.method || 'put',
       headers: {
-        'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.context.access_token}`
+        'x-api-key': process.env.REACT_APP_API_KEY
       },
       data: {
         from: this.state.from,
         to: this.state.to,
         when: this.state.when,
-        contact: this.safeContact(this.state.contact)
+        contact: this.state.contact
       }
     }
     axios(config)
@@ -87,8 +84,7 @@ class RideForm extends Component {
       url: `rides/${this.props.data.id}`,
       method: 'delete',
       headers: {
-        'x-api-key': process.env.REACT_APP_API_KEY,
-        'Authorization': `Bearer ${this.context.access_token}`
+        'x-api-key': process.env.REACT_APP_API_KEY
       }
     }
     axios(config)
@@ -105,9 +101,7 @@ class RideForm extends Component {
           this.props.done(error.response.data.message)
         } else if (error.request) {
           // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          this.props.done(`no response to delete request`)
+          this.props.done('no response to delete request')
         } else {
           // Something happened in setting up the request that triggered an Error
           this.props.done(error.message)
@@ -127,25 +121,9 @@ class RideForm extends Component {
     this.props.done()
   }
 
-  safeContact = contact => {
-    let url
-    try {
-      url = new URL(this.state.contact)
-    } catch(err) {
-      return null
-    }
-    const protocol = url.protocol
-    if (protocol === 'mailto:' || protocol === 'http:' || protocol === 'https:') {
-      return contact
-    } else {
-      return null
-    }
-  }
-
   render() {
     return (
-      <AuthenticatedUserContext.Consumer>
-      {user => <div>
+      <div>
         <form onSubmit={this.submitRide}>
           <TextField
             disabled={this.state.disabled}
@@ -178,14 +156,13 @@ class RideForm extends Component {
             value={this.state.contact}
             onChange={this.handleChange}
           />}
-          {this.state.disabled && this.safeContact(this.state.contact) &&
+          {this.state.disabled && this.state.contact &&
           <Button
             disabled={false}
             label='Contact'
             name='contact'
             type='url'
-            href={this.safeContact(this.state.contact)}
-            rel='noreferrer'
+            href={this.state.contact}
           >
             contact
           </Button>}
@@ -200,8 +177,7 @@ class RideForm extends Component {
             </div>
           }
         </form>
-        {user && this.props.data &&
-          user.profile.sub === this.props.data.sub &&
+        {this.props.data &&
           this.state.disabled &&
           <div>
             <Button onClick={this.remove}>
@@ -213,8 +189,6 @@ class RideForm extends Component {
           </div>
         }
       </div>
-    }
-      </AuthenticatedUserContext.Consumer>
     )
   }
 }

@@ -1,94 +1,17 @@
 import React, {Component} from 'react'
 import axios from 'axios'
 import {Button} from '@material-ui/core'
-import {UserManager} from 'oidc-client'
-import {getPayload} from './helpers/tokens'
 import {Rides} from './Rides'
 import RideForm from './RideForm'
 import './css/App.css'
 import Header from './Header'
-import AuthenticatedUserContext from './AuthenticatedUserContext'
-
-const config = {
-  authority: process.env.REACT_APP_ISSUER,
-  client_id: process.env.REACT_APP_CLIENT_ID,
-  redirect_uri: window.origin,
-  response_type: 'code',
-  scope: 'openid rides/create rides/delete rides/update',
-  loadUserInfo: false,
-  automaticSilentRenew: true
-}
 
 class App extends Component {
 
   constructor(props) {
     super(props)
     this.state = {}
-    this.userManager =  new UserManager(config)
-    const urlStr = window.location
-    const url = new URL(urlStr)
-    const params = url.searchParams
-    if (params && params.get('code')) {
-      this.userManager.signinRedirectCallback(urlStr)
-        .then(user => {
-          this.stripCode()
-        })
-        .catch(error => {
-          this.setState({
-            errorMessage: `cannot login: error exchanging code for token - ${JSON.stringify(error)}`
-          })
-        })
-        .finally (
-          this.listRides()
-        )
-    } else {
-      this.setUser()
-      this.listRides()
-    }
-    this.userManager.events.addUserLoaded(() => {
-      this.setUser()
-    })
-    this.userManager.events.addUserUnloaded(() => {
-      this.setState({
-        user: undefined
-      })
-    })
-    this.userManager.events.addAccessTokenExpired(() => {
-      this.userManager.removeUser()
-      this.setState({
-        user: undefined
-      })
-    })
-  }
-
-  stripCode = () => {
-    window.history.replaceState({}, '', window.origin)
-  }
-
-  setUser = () => {
-    this.userManager.getUser()
-      .then(user => {
-        if (user) {
-          const profile = getPayload(user.id_token)
-          user.profile = profile
-          this.setState({
-            user: user
-          })
-        } else {
-          this.setState({
-            user: undefined
-          })
-        }
-      })
-      // no catch - getUser never throws an Error
-  }
-
-  logout = () => {
-    this.userManager.removeUser()
-    this.setState({
-      user: undefined,
-      errorMessage: undefined
-    })
+    this.listRides()
   }
 
   done = (errorMessage) => {
@@ -134,14 +57,13 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AuthenticatedUserContext.Provider value={this.state.user}>
-          <Header userManager={this.userManager} logout={this.logout}/>
-          {this.state.user && !this.state.enteringRide &&
+          <Header/>
+          {!this.state.enteringRide &&
               <Button onClick={this.addRide}>
                 Share another ride
               </Button>
           }
-          {this.state.user && this.state.enteringRide &&
+          {this.state.enteringRide &&
             <RideForm method='post' done={this.done}/>
           }
           <Rides list={this.state.rides}
@@ -152,7 +74,6 @@ class App extends Component {
               {this.state.errorMessage}
             </p>
           }
-        </AuthenticatedUserContext.Provider>
         <h3>
           Ride sharing is the future. Check out some of the other initiatives.
         </h3>
@@ -162,7 +83,6 @@ class App extends Component {
           height="615"
           src="https://www.gocarma.com/news/"
           frameBorder="0"
-          sandbox=""
         />
       </div>
     )
