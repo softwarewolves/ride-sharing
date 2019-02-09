@@ -49,6 +49,14 @@ In case you're simply copy pasting the build folder to Netlify, go for option 2,
 
 It turns out that, in order to secure the application and get full access to the API, you need some additional information. Do you know which?
 
+## Exercise
+The API you are accessing provides much more features if you are able to authenticate and receive tokens from an authorization server that is trusted by the API. The hard part is already done since such an authorization server is already set up by us (you can get the details from the instructor). What you have to do is making sure the React app is able to speak with the authorization server. Use the OIDC Authorization code flow with PKCE for that. We suggest you use Brock Allen’s oidc-client-js library.
+
+The exercise contains three parts:
+* Make the React app OIDC/OAuth2 aware and add a login button. The login should return both an ID token and an access token. The scope of the access token that you request should be 'openid rides/create rides/delete rides/update'
+* add a sandboxed iframe. Verify that it is not allowed to run any scripts
+* add a CSP policy which is as stringent as possible without breaking existing things
+
 ## React
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
