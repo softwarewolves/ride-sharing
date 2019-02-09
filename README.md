@@ -10,25 +10,42 @@ Node 8.x
 
 ## Getting Started
 
-If you only want to observe the behavior of a secure version of this application, you can do so at https://ride-sharing.tk, a site hosted on [Netlify](https://netlify.com). On the other hand, you can also set up your own experiments by cloning the repo and making changes. Here are the instructions for running the application locally:
+### Preparation:
+* Create a netlify account at https://www.netlify.com/
+* Ask the instructor for the URL of the API as well as the API key that is required to access the API
+* (Optional) Create a freenom account at https://www.freenom.com
+* (Optional) Register an account at https://report-uri.com
 
-1. Gain access to a backend API by setting one up for yourself or requesting the following from the instructor or author:
-   * the URL (including stage) of the API
-   * an API key
-1. `git clone https://softwarewolves/ride-sharing`
-1. `cd ride-sharing`
-1. All the information allowing you to connect to the API need to be supplied to the application. To do so, set the following environment variables, either in the shell or, better, in a `.env` file:
-   * `REACT_APP_API_KEY`
-   * `REACT_APP_API_HOST`
-   * `REACT_APP_API_STAGE`
-1. `npm install`
-1. `npm start`
-   * starts a development server
-   * opens a tab in the default browser
-   * loads the application.
-1. Make changes and watch the effects on the application.
+### Get the code
+First clone into the repo  
+`git clone https://github.com/softwarewolves/ride-sharing.git`  
+`cd ride-sharing`
 
-The repo contains files to build and deploy the application on Netlify as well as the source code.
+Create a .env file in the root directory of the project:
+
+    REACT_APP_API_KEY=<in case your API is hosted on AWS, an API-key is required>
+    REACT_APP_API_HOST=<API location (exclude the scheme)>
+    REACT_APP_API_STAGE=<in case you use a path to indicate staging, leave empty if you are not certain>
+
+`npm install`  
+`npm audit`
+
+### Run the code locally
+`npm start`
+
+This will start a development server, open a tab in your default browser, and load the SPA. You can now make changes and the changes will be live-reloaded.
+
+### Run the code on Netlify
+You have two options:
+
+1. `npm run build`
+2. `npm run build_headerfile`
+
+In case you have configured Netlify for continuous deployment, go for option 1, and the deploy will happen automatically.
+In case you're simply copy pasting the build folder to Netlify, go for option 2, and copy paste the build folder.
+
+### Configure custom domain (optional)
+(Optional) If you have chosen for a custom .tk domain, you'll have to change the nameservers at freenom to those of Netlify. You may have to wait a couple of minutes before the DNS changes are applied and HTTPS can be activated. 
 
 It turns out that, in order to secure the application and get full access to the API, you need some additional information. Do you know which?
 
