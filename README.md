@@ -54,7 +54,7 @@ The API you are accessing provides much more features if you are able to authent
 
 The exercise contains three parts:
 * Make the React app OIDC/OAuth2 aware and add a login button. The login should return both an ID token and an access token. The scope of the access token that you request should be 'openid rides/create rides/delete rides/update'
-* add a sandboxed iframe. Verify that it is not allowed to run any scripts
+* sandbox the gocarma news iframe. Verify that it is not allowed to run any scripts
 * add a CSP policy which is as stringent as possible without breaking existing things
 
 ## React
