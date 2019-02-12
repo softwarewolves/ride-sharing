@@ -8,6 +8,11 @@ This app consumes a backend API defined in [a companion, Ride Sharing API, proje
 
 Node 8.x
 
+## Prerequisites - Windows only
+* MinGW with base MSYS package added to your PATH
+* `copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe`
+* `copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe`
+
 ## Getting Started
 
 ### Preparation:
@@ -35,7 +40,6 @@ Create a .env file in the root directory of the project:
 This will start a development server, open a tab in your default browser, and load the SPA. You can now make changes and the changes will be live-reloaded.
 
 ### Run the code on Netlify
-Run  
 `make all`
 
 In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.
