@@ -35,13 +35,12 @@ Create a .env file in the root directory of the project:
 This will start a development server, open a tab in your default browser, and load the SPA. You can now make changes and the changes will be live-reloaded.
 
 ### Run the code on Netlify
-You have two options:
+Run  
+`make all`
 
-1. `npm run build`
-2. `npm run build_headerfile`
-
-In case you have configured Netlify for continuous deployment, go for option 1, and the deploy will happen automatically.
-In case you're simply copy pasting the build folder to Netlify, go for option 2, and copy paste the build folder.
+In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.
+In case you have configured Netlify for continuous deployment, the deploy will happen automatically.
+Do not forget to manually set the environment variables in the settings of the Netlify app.
 
 ### Configure custom domain (optional)
 (Optional) If you have chosen for a custom .tk domain, you'll have to change the nameservers at freenom to those of Netlify. You may have to wait a couple of minutes before the DNS changes are applied and HTTPS can be activated. 
