@@ -42,7 +42,7 @@ This will start a development server, open a tab in your default browser, and lo
 ### Run the code on Netlify
 `make all`
 
-In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.
+In case you're simply copy pasting the build folder to Netlify you now have to copy paste the build folder.  
 In case you have configured Netlify for continuous deployment, the deploy will happen automatically.
 Do not forget to manually set the environment variables in the settings of the Netlify app.
 
