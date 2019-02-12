@@ -28,7 +28,6 @@ Create a .env file in the root directory of the project:
     REACT_APP_API_STAGE=<in case you use a path to indicate staging, leave empty if you are not certain>
 
 `npm install`  
-`npm audit`
 
 ### Run the code locally
 `npm start`
