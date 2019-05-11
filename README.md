@@ -9,9 +9,8 @@ This app consumes a backend API defined in [a companion, Ride Sharing API, proje
 Node 8.x
 
 ## Prerequisites - Windows only
-* MinGW with base MSYS package added to your PATH (https://sourceforge.net/projects/mingw/files/MSYS/)
-* `copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe`
-* `copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe`
+* install mingw32-base with msys-base (meta) installed (https://sourceforge.net/projects/mingw/files/MSYS/)
+* msys bin folder added to your path (<mingw installation dir>\msys\1.0\bin)
 
 ## Getting Started
 
